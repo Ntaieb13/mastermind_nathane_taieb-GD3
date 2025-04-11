@@ -39,6 +39,6 @@ void AMastermindRow::Clicked()
 }
 
 void AMastermindRow::ApplySolution(uint8 GoodPlaces, uint8 WrongPlaces)
-{
+{UE_LOG(LogTemp, Log, TEXT("Good: %d, Wrong: %d"), GoodPlaces, WrongPlaces);
 }
 

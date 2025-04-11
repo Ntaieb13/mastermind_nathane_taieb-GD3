@@ -3,6 +3,48 @@
 
 #include "MasterMindGM.h"
 
+ void AMasterMindGM::CheckAnswer(TArray<uint8> Answer & PlayerGuess)
+{:: 
+	uint8 GoodPlace = 0;
+	uint8 WrongPlace = 0;
+
+	TArray<bool> UsedInCode;
+	TArray<bool> UsedInGuess;
+	UsedInCode.Init(false, 4);
+	UsedInGuess.Init(false, 4);
+
+	// Étape 1 : Bonnes couleurs à la bonne place
+	for (int i = 0; i < 4; i++)
+	{
+		if (PlayerGuess[i] == SecretCode[i])
+		{
+			GoodPlace++;
+			UsedInCode[i] = true;
+			UsedInGuess[i] = true;
+		}
+	}
+
+	// Étape 2 : Bonnes couleurs à la mauvaise place
+	for (int i = 0; i < 4; i++)
+	{
+		if (UsedInGuess[i]) continue;
+
+		for (int j = 0; j < 4; j++)
+		{
+			if (!UsedInCode[j] && PlayerGuess[i] == SecretCode[j])
+			{
+				WrongPlace++;
+				UsedInCode[j] = true;
+				break;
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Résultat : %d bien placés, %d mal placés"), GoodPlace, WrongPlace);
+
+	OnSolutionChecked.Broadcast(GoodPlace, WrongPlace);
+}
+
 // Sets default values
 AMasterMindGM::AMasterMindGM()
 {
@@ -13,10 +55,26 @@ AMasterMindGM::AMasterMindGM()
 
 // Called when the game starts or when spawned
 void AMasterMindGM::BeginPlay()
+{void AMasterMindGM::BeginPlay();
 {
+	Super::BeginPlay();
+
+	// Exemple : générer une combinaison de 4 couleurs aléatoires (valeurs entre 0 et 5)
+	SecretCode.SetNum(4);
+	for (int i = 0; i < 4; ++i)
+	{
+		SecretCode[i] = FMath::RandRange(0, 5); // 6 couleurs possibles
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Code secret : %d %d %d %d"), SecretCode[0], SecretCode[1], SecretCode[2], SecretCode[3]);
+}
+
 	Super::BeginPlay();
 	CreateSolution();
 }
+
+
+
 
 // Called every frame
 void AMasterMindGM::Tick(float DeltaTime)
@@ -88,5 +146,7 @@ bool AMasterMindGM::CheckAnswer(TArray<uint8> Answer)
 	OnSolutionChecked.Broadcast(GoodPlaces,WrongPlaces);
 	UE_LOG(LogTemp,Warning,TEXT("CheckAnswer Done"));
 	return result;
+
+	
 }
 

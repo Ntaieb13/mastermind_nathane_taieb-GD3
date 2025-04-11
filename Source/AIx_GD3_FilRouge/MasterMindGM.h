@@ -15,6 +15,11 @@ class AIX_GD3_FILROUGE_API AMasterMindGM : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
+
+	// Le code secret (ex : [1,3,2,0])
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<uint8> SecretCode;
+
 	AMasterMindGM();
 
 	UPROPERTY()
@@ -40,5 +45,7 @@ public:
 	UFUNCTION()
 	void CreateSolution();
 	UFUNCTION(BlueprintCallable)
-	bool CheckAnswer(TArray<uint8> Answer);
+	bool CheckAnswer(TArray<uint8> Answer & PlayerGuess);
 };
+
+
